@@ -1,0 +1,58 @@
+﻿@using EcommerceStore.WebApp.MVC.Extensions
+@using EcommerceStore.WebApi.Core.Usuario
+
+@model PagedViewModel<ProdutoViewModel>
+@inject IAspNetUser AppUser
+
+@{
+    ViewData["Title"] = "Todos os produtos";
+}
+
+<section style="background-color: #caced1;">
+    <div>
+        <div class="container" style=" padding-top: 20px;">
+
+            @if(!Model.List.Any())
+            {
+                <h3 style="padding-top: 20px;">Nenhum produto cadastrado :( </h3>
+            }
+            else
+            {
+
+                <div class="row">
+                    @{
+                        foreach (var produto in Model.List.OrderBy(p => p.Nome))
+                        {
+                            <div class="col-md-3">
+                                <div href="#" class="card card-product-grid border border-secondary rounded">
+                                    <a asp-controller="Catalogo" asp-action="ProdutoDetalhe" asp-route-id="@produto.Id" class="img-wrap">
+                                        <img src="~/images/produtos/@produto.Imagem" alt="@produto.Nome" style="padding-top:5px">
+                                    </a>
+                                    <figcaption class="info-wrap">
+                                        <a asp-controller="Catalogo" asp-action="ProdutoDetalhe" asp-route-id="@produto.Id" class="title">
+                                            <b> @produto.Nome</b>
+                                        </a>
+                                        <small class="card-text">
+                                            @this.MensagemEstoque(produto.QuantidadeEstoque.Value)<br /><br />
+                                        </small>
+                                    </figcaption>
+
+                                    <div class="card-footer price mt-0">
+                                        <h5 class="text-center">@this.FormatoMoeda(produto.Valor.Value)</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="text-right">
+                    <span style="color:blue; padding-top: 20px;">Mostrando @Model.List.ToList().Count @this.ObterDescricaoPedido(@Model.List.ToList().Count, "produto") de um total de @Model.TotalResults   </span>
+                </div>
+                @if (Model.TotalPages > 1)
+                {
+                    <vc:paginacao modelo-paginado="@Model"> </vc:paginacao>
+                }
+            }
+        </div>
+    </div>
+</section>

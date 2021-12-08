@@ -1,0 +1,98 @@
+﻿@using EcommerceStore.WebApp.MVC.Extensions
+@model PagedViewModel<ListarVoucherViewModel>
+
+@{
+    ViewData["Title"] = "Vouchers Cadastrados";
+}
+
+<section class="padding-y">
+    <div class="container">
+        <h3 style="padding-top: 20px;">@ViewData["Title"] </h3>
+        <hr />
+
+        @if (!@Model.List.Any())
+        {
+            <h3 style="padding-top: 20px;">Nenhum voucher por aqui :( </h3>
+        }
+        else
+        {
+
+            <div style="padding-top: 30px;">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Codigo)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().ValorDesconto)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Percentual)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Quantidade)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().DataCriacao)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().DataValidade)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Ativo)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Utilizado)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.List.OrderByDescending(i => i.DataValidade))
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Codigo)
+                                </td>
+                                <td class="text-center">
+                                    @if (item.ValorDesconto.HasValue)
+                                    {
+                                    <span> @this.FormatoMoeda(item.ValorDesconto.Value) </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (item.Percentual.HasValue)
+                                    {
+                                        <span> % @item.Percentual.Value </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Quantidade)
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.DataCriacao)
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.DataValidade)
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Ativo)
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Utilizado)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="text-right">
+                    <h6 style="padding-top: 20px;">Mostrando @Model.List.ToList().Count @this.ObterDescricaoPedido(@Model.List.ToList().Count, "voucher") de um total de @Model.TotalResults   </h6>
+                </div>
+                @if (Model.TotalPages > 1)
+                {
+                    <vc:paginacao modelo-paginado="@Model"> </vc:paginacao>
+                }
+            </div>
+        }
+    </div>
+</section>

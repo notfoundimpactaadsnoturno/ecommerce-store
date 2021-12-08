@@ -1,0 +1,13 @@
+"DefaultConnection": "Server=sql-server;Database=EcommerceDb;MultipleActiveResultSets=true;User Id=sa;Password=MeuDB@123;"
+
+"MessageBus": "host=rabbit-ecommercestore:5672;publisherConfirms=true;timeout=100;username=notfound;password=notfound"
+
+"AutenticacaoJwksUrl": "http://ecommercestore-api-identidade:5201/jwks"
+
+"AutenticacaoUrl": "http://ecommercestore-api-identidade:5201"
+"CarrinhoUrl": "http://ecommercestore-api-carrinho:5501"
+"CatalogoUrl": "http://ecommercestore-api-catalogo:5401"
+"ClienteUrl": "http://ecommercestore-api-clientes:5301"
+"PedidoUrl": "http://ecommercestore-api-pedidos:5601"
+"PagamentoUrl": "http://ecommercestore-api-pagamentos:5701"
+"ComprasBffUrl": "http://ecommercestore-bff-compras:5801"

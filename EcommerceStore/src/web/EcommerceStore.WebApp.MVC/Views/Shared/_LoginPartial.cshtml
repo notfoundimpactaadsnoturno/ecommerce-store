@@ -1,0 +1,45 @@
+﻿@using EcommerceStore.WebApp.MVC.Extensions
+@using EcommerceStore.WebApi.Core.Usuario
+@inject IAspNetUser AppUser
+
+@if (AppUser.EstaAutenticado())
+{
+    <div>
+        <vc:carrinho />
+    </div>
+
+    <div class="dropdown d-inline-block">
+        <a href="#" class="icontext dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <img class="icon icon-sm rounded-circle" src="https://s.gravatar.com/avatar/@this.HashEmailForGravatar(AppUser.ObterUserEmail())?d=mm&s=45">
+        </a> <!-- iconbox // -->
+        <div class="dropdown-menu dropdown-menu-left" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 12px; left: 91px; transform: translate3d(150px, 32px, 0px);">
+            @if (AppUser.EhAdmin())
+            {
+                <a class="dropdown-item" asp-controller="Pedido" asp-action="MeusPedidosAdmin">Meus Pedidos</a>
+                <a class="dropdown-item" asp-controller="Catalogo" asp-action="Criar">Novo Produto</a>
+                <a class="dropdown-item" asp-controller="Pedido" asp-action="CriarVoucher">Gerar Voucher</a>
+                <a class="dropdown-item" asp-controller="Pedido" asp-action="MeusVouchers">Meus Vouchers</a>
+            }
+            else
+            {
+                <a class="dropdown-item" asp-controller="Pedido" asp-action="MeusPedidosClientes">Meus Pedidos</a>
+            }
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" asp-controller="Identidade" asp-action="Logout">Sair</a>
+        </div>
+    </div>
+    @if (string.IsNullOrWhiteSpace(AppUser.Name))
+    {
+        <p class="mt-2 ml-3"> @this.ObterNomeUsuario(AppUser) </p>
+    }
+}
+else
+{
+    <div class="widget-header">
+        <small class="title text-muted">Bem vindo!</small>
+        <div>
+            <a asp-controller="Identidade" asp-action="Registro">Crie sua conta</a> <span> | </span>
+            <a asp-controller="Identidade" asp-action="Login"> Login</a>
+        </div>
+    </div>
+}

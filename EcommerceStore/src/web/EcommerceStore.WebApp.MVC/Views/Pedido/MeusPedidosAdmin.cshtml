@@ -1,0 +1,80 @@
+﻿@using EcommerceStore.WebApp.MVC.Extensions
+@model PagedViewModel<PedidoViewModel>
+
+@{
+    ViewData["Title"] = "Todos os Pedidos";
+}
+
+<section class="padding-y">
+    <div class="container">
+        <h3 style="padding-top: 20px;">@ViewData["Title"] </h3>
+        <hr />
+
+        @if (!Model.List.Any())
+        {
+            <h3 style="padding-top: 20px;">Nenhum pedido por aqui :( </h3>
+        }
+        else
+        {
+            <div style="padding-top: 30px;">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Codigo)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Status)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Data)
+                            </th>
+                            <th class="text-center">
+                                Itens
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().ValorTotal)
+                            </th>
+                            <th class="text-center">
+                                @Html.DisplayNameFor(model => model.List.FirstOrDefault().VoucherUtilizado)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.List.OrderByDescending(i => i.Data))
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Codigo)
+                                </td>
+                                <td class="text-center">
+                                    @this.ObterDescricaoStatus(item.Status)
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Data)
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.PedidoItens.Count)
+                                </td>
+                                <td class="text-center">
+                                    @this.FormatoMoeda(item.ValorTotal)
+                                    
+                                </td>
+                                <td class="text-center">
+                                    @Html.DisplayFor(modelItem => item.VoucherUtilizado)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="text-right">
+                    <h6 style="padding-top: 20px;">Mostrando @Model.List.ToList().Count @this.ObterDescricaoPedido(@Model.List.ToList().Count, "pedido") de um total de @Model.TotalResults   </h6>
+                </div>
+                @if (Model.TotalPages > 1)
+                {
+                    <vc:paginacao modelo-paginado="@Model"> </vc:paginacao>
+                }
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,71 @@
+﻿@using EcommerceStore.WebApp.MVC.Extensions
+@model EcommerceStore.WebApp.MVC.Models.CriarVoucherViewModel
+
+@{
+    ViewData["Title"] = "Gerar Voucher";
+}
+
+<div class="container" style=" padding-top: 20px">
+
+    <h3 style="padding-top: 50px">@ViewData["Title"] </h3>
+    <hr />
+    <vc:Summary></vc:Summary>
+
+    <div class="row">
+        <div class="col-md-5">
+            <form asp-action="CriarVoucher" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Codigo" class="control-label"></label>
+                    <input asp-for="Codigo" class="form-control" />
+                    <span asp-validation-for="Codigo" class="text-danger"></span>
+                </div>
+                <div class="form-row form-group">
+                    <div class="form-group form-check col-12">
+                        <label class="form-check-label col-2">
+                            <input class="form-check-input" asp-for="EhTotal" checked /> @Html.DisplayNameFor(model => model.EhTotal)
+                        </label>
+                        <label class="form-check-label col-4">
+                            <input class="form-check-input" asp-for="EhPercentual" /> @Html.DisplayNameFor(model => model.EhPercentual)
+                        </label>
+                    </div>
+                    <span asp-validation-for="EhTotal" class="text-danger col-12"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ValorDesconto" class="control-label"></label>
+                    <input asp-for="ValorDesconto" class="form-control" />
+                    <span asp-validation-for="ValorDesconto" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Quantidade" class="control-label"></label>
+                    <input asp-for="Quantidade" class="form-control" />
+                    <span asp-validation-for="Quantidade" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ValidadeEmDias" class="control-label"></label>
+                    <input asp-for="ValidadeEmDias" class="form-control" />
+                    <span asp-validation-for="ValidadeEmDias" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Salvar" class="btn btn-success" />
+                    <a class="btn btn-info" asp-controller="Catalogo" asp-action="Index">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $("#ImagemUpload").change(function () {
+            $("#img_nome").text(this.files[0].name);
+            $("#img_nome")[0].style.display = 'block';
+        });
+    </script>
+}

@@ -1,0 +1,27 @@
+Identidade
+    "Docker": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "44361"
+      },
+      "httpPort": 53372,
+      "useSSL": true,
+      "sslPort": 44361
+    }
+
+Catalogo
+"Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "environmentVariables": {
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_HTTPS_PORT": "44352"
+      },
+      "httpPort": 53554,
+      "useSSL": true,
+      "sslPort": 44352
+    }

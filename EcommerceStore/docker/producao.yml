@@ -1,0 +1,157 @@
+version: "3"
+
+services:
+
+    rabbitmq-ecommerce:
+        image: rabbitmq:3-management
+        container_name: rabbit-ecommercestore
+        environment:
+            RABBITMQ_DEFAULT_USER: "notfound"
+            RABBITMQ_DEFAULT_PASS: "notfound"
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+
+    sql-server-ecommerce:
+        image: notfound/ecommercestore-sql-server:latest
+        container_name: ecommercestore-sql-server
+        build:
+            context: ../sql
+            dockerfile: ./Dockerfile        
+        ports:
+            - "1433:1433"
+        environment:
+            SA_PASSWORD: "MeuDB@123"
+            ACCEPT_EULA: "Y"
+            MSSQL_PID: Express    
+
+    api-catalogo:
+        image: notfound/ecommercestore-api-catalogo:latest
+        container_name: ecommercestore-api-catalogo
+        build:
+            context: ../src
+            dockerfile: ./services/EcommerceStore.Catalogo.API/Dockerfile   
+        ports:
+            - "5401:5401"     
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5401
+        depends_on:
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce
+    
+    api-clientes:
+        image: notfound/ecommerce-api-clientes:latest
+        container_name: ecommercestore-api-clientes
+        build:
+            context: ../src
+            dockerfile: ./services/EcommerceStore.Clientes.API/Dockerfile
+        ports:
+            - "5301:5301"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5301
+        depends_on:
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce
+
+    api-identidade:
+        image: notfound/ecommercestore-api-identidade:latest
+        container_name: ecommercestore-api-identidade
+        build:
+            context: ../src
+            dockerfile: ./services/EcommerceStore.Identidade.API/Dockerfile
+        ports:
+            - "5201:5201"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5201
+        depends_on:
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce
+            - api-clientes         
+
+    api-carrinho:
+        image: notfound/ecommercestore-api-carrinho:latest
+        container_name: ecommercestore-api-carrinho
+        build: 
+            context: ../src
+            dockerfile: ./services/EcommerceStore.Carrinho.API/Dockerfile
+        ports:
+            - "5501:5501"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5501
+        depends_on:
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce
+    
+    api-pagamentos:
+        image: notfound/ecommercestore-api-pagamentos
+        container_name: ecommercestore-api-pagamentos
+        build:
+            context: ../src
+            dockerfile: ./services/EcommerceStore.Pagamentos.API/Dockerfile
+        ports:
+            - "5701:5701"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5701
+        depends_on:
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce    
+    
+    bff-compras:
+        image: notfound/ecommercestore-bff-compras:latest
+        container_name: ecommercestore-bff-compras
+        build:
+            context: ../src
+            dockerfile: ./api gateways/EcommerceStore.Bff.Compras/Dockerfile
+        ports:
+            - "5801:5801"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5801
+        depends_on:    
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce        
+            - api-catalogo            
+            - api-identidade
+            - api-carrinho                        
+
+    web-mvc:
+        image: notfound/ecommercestore-web-mvc:latest
+        container_name: ecommercestore-web-mvc
+        build:
+            context: ../src
+            dockerfile: ./web/EcommerceStore.WebApp.MVC/Dockerfile
+        ports:
+            - "5001:5001"
+            - "5003:5003"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5001
+        depends_on: 
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce           
+            - api-catalogo            
+            - api-identidade
+            - api-carrinho            
+            - api-pedidos
+            - bff-compras
+
+    api-pedidos:
+        image: notfound/ecommercestore-api-pedidos:latest
+        container_name: ecommercestore-api-pedidos
+        build:
+            context: ../src
+            dockerfile: ./services/EcommerceStore.Pedidos.API/Dockerfile
+        ports:
+            - "5601:5601"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5601
+        depends_on:         
+            - rabbitmq-ecommerce
+            - sql-server-ecommerce
+            - api-identidade 

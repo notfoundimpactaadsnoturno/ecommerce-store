@@ -7,19 +7,14 @@ services:
         container_name: rabbit-ecommercestore
         environment:
             RABBITMQ_DEFAULT_USER: "notfound"
-            RABBITMQ_DEFAULT_PASS: "notfound"
-        ports:
-            - "5672:5672"
-            - "15672:15672"
+            RABBITMQ_DEFAULT_PASS: "notfound"              
 
     sql-server-ecommerce:
         image: notfound/ecommercestore-sql-server:latest
         container_name: ecommercestore-sql-server
         build:
             context: ../sql
-            dockerfile: ./Dockerfile        
-        ports:
-            - "1433:1433"
+            dockerfile: ./Dockerfile                
         environment:
             SA_PASSWORD: "MeuDB@123"
             ACCEPT_EULA: "Y"
@@ -30,9 +25,7 @@ services:
         container_name: ecommercestore-api-catalogo
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Catalogo.API/Dockerfile   
-        ports:
-            - "5401:5401"     
+            dockerfile: ./services/EcommerceStore.Catalogo.API/Dockerfile           
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5401
@@ -45,9 +38,7 @@ services:
         container_name: ecommercestore-api-clientes
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Clientes.API/Dockerfile
-        ports:
-            - "5301:5301"
+            dockerfile: ./services/EcommerceStore.Clientes.API/Dockerfile        
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5301
@@ -60,9 +51,7 @@ services:
         container_name: ecommercestore-api-identidade
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Identidade.API/Dockerfile
-        ports:
-            - "5201:5201"
+            dockerfile: ./services/EcommerceStore.Identidade.API/Dockerfile        
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5201
@@ -76,9 +65,7 @@ services:
         container_name: ecommercestore-api-carrinho
         build: 
             context: ../src
-            dockerfile: ./services/EcommerceStore.Carrinho.API/Dockerfile
-        ports:
-            - "5501:5501"
+            dockerfile: ./services/EcommerceStore.Carrinho.API/Dockerfile        
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5501
@@ -91,9 +78,7 @@ services:
         container_name: ecommercestore-api-pagamentos
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Pagamentos.API/Dockerfile
-        ports:
-            - "5701:5701"
+            dockerfile: ./services/EcommerceStore.Pagamentos.API/Dockerfile        
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5701
@@ -106,9 +91,7 @@ services:
         container_name: ecommercestore-bff-compras
         build:
             context: ../src
-            dockerfile: ./api gateways/EcommerceStore.Bff.Compras/Dockerfile
-        ports:
-            - "5801:5801"
+            dockerfile: ./api gateways/EcommerceStore.Bff.Compras/Dockerfile        
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5801
@@ -124,10 +107,7 @@ services:
         container_name: ecommercestore-web-mvc
         build:
             context: ../src
-            dockerfile: ./web/EcommerceStore.WebApp.MVC/Dockerfile
-        ports:
-            - "5001:5001"
-            - "5003:5003"
+            dockerfile: ./web/EcommerceStore.WebApp.MVC/Dockerfile        
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5001
@@ -145,9 +125,7 @@ services:
         container_name: ecommercestore-api-pedidos
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Pedidos.API/Dockerfile
-        ports:
-            - "5601:5601"
+            dockerfile: ./services/EcommerceStore.Pedidos.API/Dockerfile        
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=http://*:5601
@@ -155,3 +133,15 @@ services:
             - rabbitmq-ecommerce
             - sql-server-ecommerce
             - api-identidade 
+    
+    ecommerce-server-nginx:
+        image: notfound/ecommerce-server-nginx
+        container_name: ecommerce-server-nginx
+        build:
+            context: ./
+            dockerfile: ./nginx/Dockerfile
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - web-mvc

@@ -1,0 +1,16 @@
+Baixar a Branch Master
+
+Acessar a pasta baixada 
+ecommerce-store\EcommerceStore\docker\nginx\certs
+
+Instalar o cerficado senha nerdstore
+
+Acessar pelo CMD permissão ADM
+ecommerce-store\EcommerceStore\docker
+
+rodar o comando docker-compose -f producao.yml up
+
+
+
+
+

@@ -71,7 +71,7 @@ services:
         volumes:
             - ./certs:/https:ro
         depends_on:
-            - rabbitmq
+            - rabbitmq-ecommerce
             - sql-server-ecommerce        
 
     api-carrinho:
@@ -151,8 +151,8 @@ services:
         depends_on: 
             - api-catalogo
             - api-identidade
-            - api-cliente
-            - api-bff-compras
+            - api-clientes
+            - bff-compras
 
     api-pedidos:
         image: notfound/ecommercestore-api-pedidos:latest

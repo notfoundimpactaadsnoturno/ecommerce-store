@@ -1,4 +1,5 @@
-﻿using EcommerceStore.WebApi.Core.Usuario;
+﻿using EcommerceStore.WebApi.Core.Extensions;
+using EcommerceStore.WebApi.Core.Usuario;
 using EcommerceStore.WebApp.MVC.Extensions;
 using EcommerceStore.WebApp.MVC.Services;
 using EcommerceStore.WebApp.MVC.Services.Handlers;
@@ -20,34 +21,33 @@ namespace EcommerceStore.WebApp.MVC.Configuration
         {
             services.AddSingleton<IValidationAttributeAdapterProvider, CpfValidationAttributeAdapterProvider>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IAspNetUser, AspNetUser>();
-
-
-            #region HttpServices
+            services.AddScoped<IAspNetUser, AspNetUser>();            
             
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
-            services.AddHttpClient<IAutenticacaoService, AutenticacaoService>()                                 
+            services.AddHttpClient<IAutenticacaoService, AutenticacaoService>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
+                .PermitirCertificadosAutoAssinados()
                 .AddTransientHttpErrorPolicy(policy => policy.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<ICatalogoService, CatalogoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 //.AddTransientHttpErrorPolicy(policy => policy.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(600)));
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
+                .PermitirCertificadosAutoAssinados()
                 .AddTransientHttpErrorPolicy(policy => policy.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));            
 
             services.AddHttpClient<IClienteService, ClienteService>()
               .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
               .AddPolicyHandler(PollyExtensions.EsperarTentar())
+              .PermitirCertificadosAutoAssinados()
               .AddTransientHttpErrorPolicy(policy => policy.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<IComprasBffService, ComprasBffService>()
                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                .AddPolicyHandler(PollyExtensions.EsperarTentar())
+               .PermitirCertificadosAutoAssinados()
                .AddTransientHttpErrorPolicy(policy => policy.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
-
-            #region REFIT
 
             // Configuração de REFIT
             //services.AddHttpClient("Refit", options => 
@@ -55,10 +55,7 @@ namespace EcommerceStore.WebApp.MVC.Configuration
             //    options.BaseAddress = new Uri(configuration.GetSection("CatalogoUrl").Value);
             //})
             //.AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-            //.AddTypedClient(Refit.RestService.For<ICatalogoServiceRefit>);
-            #endregion
-
-            #endregion
+            //.AddTypedClient(Refit.RestService.For<ICatalogoServiceRefit>);            
         }
     }
 

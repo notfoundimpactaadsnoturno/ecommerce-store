@@ -21,21 +21,25 @@ namespace EcommerceStore.Bff.Compras.Configuration
             services.AddHttpClient<ICatalogoService, CatalogoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
+                .PermitirCertificadosAutoAssinados()
                 .AddTransientHttpErrorPolicy(circ => circ.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<ICarrinhoService, CarrinhoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
+                .PermitirCertificadosAutoAssinados()
                 .AddTransientHttpErrorPolicy(circ => circ.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<IPedidoService, PedidoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
+                .PermitirCertificadosAutoAssinados()
                 .AddTransientHttpErrorPolicy(circ => circ.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<IClienteService, ClienteService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
+                .PermitirCertificadosAutoAssinados()
                 .AddTransientHttpErrorPolicy(circ => circ.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
         }
     }

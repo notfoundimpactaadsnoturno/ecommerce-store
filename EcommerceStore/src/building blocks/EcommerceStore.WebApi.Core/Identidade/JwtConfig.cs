@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using NetDevPack.Security.JwtExtensions;
+using System.Net.Http;
 using System.Text;
 
 namespace EcommerceStore.WebApi.Core.Identidade
@@ -26,7 +27,8 @@ namespace EcommerceStore.WebApi.Core.Identidade
                 optins.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(bearerOptions =>
             {
-                bearerOptions.RequireHttpsMetadata = false;   
+                bearerOptions.RequireHttpsMetadata = false;
+                bearerOptions.BackchannelHttpHandler = new HttpClientHandler { ServerCertificateCustomValidationCallback = delegate { return true; }};
                 bearerOptions.SaveToken = true;
                 // Utilização de JWKS
                 bearerOptions.SetJwksOptions(new JwkOptions(appSettings.AutenticacaoJwksUrl));

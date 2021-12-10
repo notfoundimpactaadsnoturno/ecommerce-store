@@ -17,18 +17,22 @@ services:
             dockerfile: ./Dockerfile                
         environment:
             SA_PASSWORD: "MeuDB@123"
-            ACCEPT_EULA: "Y"
-            MSSQL_PID: Express    
+            ACCEPT_EULA: "Y"            
 
     api-catalogo:
         image: notfound/ecommercestore-api-catalogo:latest
         container_name: ecommercestore-api-catalogo
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Catalogo.API/Dockerfile           
+            dockerfile: ./services/EcommerceStore.Catalogo.API/Dockerfile  
+        restart: always         
         environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5401
+            - ASPNETCORE_ENVIRONMENT=Production            
+            - ASPNETCORE_URLS=https://+:5401;http://+5402
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         depends_on:
             - rabbitmq-ecommerce
             - sql-server-ecommerce
@@ -38,53 +42,76 @@ services:
         container_name: ecommercestore-api-clientes
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Clientes.API/Dockerfile        
+            dockerfile: ./services/EcommerceStore.Clientes.API/Dockerfile 
+        restart: always       
         environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5301
+            - ASPNETCORE_ENVIRONMENT=Production            
+            - ASPNETCORE_URLS=https://+:5301;http://+5302
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         depends_on:
             - rabbitmq-ecommerce
             - sql-server-ecommerce
+            - api-identidade
 
     api-identidade:
         image: notfound/ecommercestore-api-identidade:latest
         container_name: ecommercestore-api-identidade
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Identidade.API/Dockerfile        
+            dockerfile: ./services/EcommerceStore.Identidade.API/Dockerfile   
+        restart: always     
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5201
+            - ASPNETCORE_URLS=https://+:5201;http://+5102
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         depends_on:
-            - rabbitmq-ecommerce
-            - sql-server-ecommerce
-            - api-clientes         
+            - rabbitmq
+            - sql-server-ecommerce        
 
     api-carrinho:
         image: notfound/ecommercestore-api-carrinho:latest
         container_name: ecommercestore-api-carrinho
         build: 
             context: ../src
-            dockerfile: ./services/EcommerceStore.Carrinho.API/Dockerfile        
+            dockerfile: ./services/EcommerceStore.Carrinho.API/Dockerfile  
+        restart: always      
         environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5501
+            - ASPNETCORE_ENVIRONMENT=Production            
+            - ASPNETCORE_URLS=https://+:5501;http://+5502
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro            
         depends_on:
             - rabbitmq-ecommerce
             - sql-server-ecommerce
+            - api-identidade
     
     api-pagamentos:
         image: notfound/ecommercestore-api-pagamentos
         container_name: ecommercestore-api-pagamentos
         build:
             context: ../src
-            dockerfile: ./services/EcommerceStore.Pagamentos.API/Dockerfile        
+            dockerfile: ./services/EcommerceStore.Pagamentos.API/Dockerfile   
+        restart: always     
         environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5701
+            - ASPNETCORE_ENVIRONMENT=Production            
+            - ASPNETCORE_URLS=https://+:5701;http://+5702
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         depends_on:
             - rabbitmq-ecommerce
             - sql-server-ecommerce    
+            - api-identidade
+            - api-pedidos
     
     bff-compras:
         image: notfound/ecommercestore-bff-compras:latest
@@ -92,33 +119,40 @@ services:
         build:
             context: ../src
             dockerfile: ./api gateways/EcommerceStore.Bff.Compras/Dockerfile        
+        restart: always
         environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5801
+            - ASPNETCORE_ENVIRONMENT=Production            
+            - ASPNETCORE_URLS=https://+:5801;http://+5801
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         depends_on:    
-            - rabbitmq-ecommerce
-            - sql-server-ecommerce        
-            - api-catalogo            
+            - rabbitmq-ecommerce                 
             - api-identidade
             - api-carrinho                        
+            - api-pagamentos   
+            - api-pedidos        
 
     web-mvc:
         image: notfound/ecommercestore-web-mvc:latest
         container_name: ecommercestore-web-mvc
         build:
             context: ../src
-            dockerfile: ./web/EcommerceStore.WebApp.MVC/Dockerfile        
+            dockerfile: ./web/EcommerceStore.WebApp.MVC/Dockerfile    
+        restart: always    
         environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5001
+            - ASPNETCORE_ENVIRONMENT=Production            
+            - ASPNETCORE_URLS=https://+:5001;http://+5002
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         depends_on: 
-            - rabbitmq-ecommerce
-            - sql-server-ecommerce           
-            - api-catalogo            
+            - api-catalogo
             - api-identidade
-            - api-carrinho            
-            - api-pedidos
-            - bff-compras
+            - api-cliente
+            - api-bff-compras
 
     api-pedidos:
         image: notfound/ecommercestore-api-pedidos:latest
@@ -126,9 +160,14 @@ services:
         build:
             context: ../src
             dockerfile: ./services/EcommerceStore.Pedidos.API/Dockerfile        
+        restart: always
         environment:
-            - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=http://*:5601
+            - ASPNETCORE_ENVIRONMENT=Production            
+            - ASPNETCORE_URLS=https://+:5601;http://+5602                        
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
+        volumes:
+            - ./certs:/https:ro
         depends_on:         
             - rabbitmq-ecommerce
             - sql-server-ecommerce
@@ -140,6 +179,7 @@ services:
         build:
             context: ./
             dockerfile: ./nginx/Dockerfile
+        restart: always
         ports:
             - "80:80"
             - "443:443"

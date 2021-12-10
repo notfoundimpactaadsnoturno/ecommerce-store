@@ -143,7 +143,7 @@ services:
         restart: always    
         environment:
             - ASPNETCORE_ENVIRONMENT=Production            
-            - ASPNETCORE_URLS=https://+:5001;http://+5002
+            - ASPNETCORE_URLS=http://*:5001;
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:

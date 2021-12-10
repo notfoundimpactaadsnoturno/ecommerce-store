@@ -134,9 +134,11 @@ services:
             - api-pagamentos   
             - api-pedidos        
 
+    #docker-compose -f producao.yml up --scale web-mvc=4
+    #docker-compose -f producao.yml up --build --scale web_mvc=4
     web-mvc:
         image: notfound/ecommercestore-web-mvc:latest
-        container_name: ecommercestore-web-mvc
+        #container_name: ecommercestore-web-mvc
         build:
             context: ../src
             dockerfile: ./web/EcommerceStore.WebApp.MVC/Dockerfile    
@@ -147,7 +149,7 @@ services:
             - ASPNETCORE_Kestrel__Certificates__Default__Password=melo880605
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/ecommercestore-certificate.pfx
         volumes:
-            - ./certs:/https:ro
+            - dpkeys:/var/dpkeys/data_protection_keys/
         depends_on: 
             - api-catalogo
             - api-identidade
@@ -185,3 +187,6 @@ services:
             - "443:443"
         depends_on:
             - web-mvc
+
+volumes:
+    dpkeys:

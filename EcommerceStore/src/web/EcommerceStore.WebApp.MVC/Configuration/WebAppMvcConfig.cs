@@ -1,12 +1,13 @@
 ﻿using EcommerceStore.WebApp.MVC.Extensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using System.IO;
 
 namespace EcommerceStore.WebApp.MVC.Configuration
 {
@@ -15,6 +16,10 @@ namespace EcommerceStore.WebApp.MVC.Configuration
         public static void AddWebAppMvcConfig(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllersWithViews();
+
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"/var/dpkeys/data_protection_keys/"))
+                .SetApplicationName("EcommerceStore");
 
             services.Configure<ForwardedHeadersOptions>(options => 
             {

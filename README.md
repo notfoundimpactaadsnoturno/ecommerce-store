@@ -11,4 +11,5 @@ Feito este passo serão necessários alguns minutos para o download das imagens,
 Para executá-lo é necessário que tenha instalado o docker-compose e docker:
 
 [docker](https://docs.docker.com/engine/install/centos/)
+
 [docker-compose](https://docs.docker.com/compose/install/)

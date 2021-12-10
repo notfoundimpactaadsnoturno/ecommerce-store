@@ -65,7 +65,7 @@ services:
         restart: always     
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5201;http://+5102
+            - ASPNETCORE_URLS=https://+:5201;http://+5202
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
@@ -122,7 +122,7 @@ services:
         restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production            
-            - ASPNETCORE_URLS=https://+:5801;http://+5801
+            - ASPNETCORE_URLS=https://+:5801;http://+5802
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:

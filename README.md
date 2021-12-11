@@ -10,7 +10,7 @@ Acesse a pasta ecommerce-store e navegue para ecommerce-store\EcommerceStore\doc
 
 Abra o terminal CMD como Administrador e execute o comando
 
-docker-compose -f producao.yml up
+		docker-compose -f producao.yml up
 
 Feito este passo serão necessários alguns minutos para o download das imagens, compilação e inicialização dos containers.
 
